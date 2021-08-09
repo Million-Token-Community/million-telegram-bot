@@ -58,11 +58,11 @@
                 break;
         }
 
-        if (!is_null($response)) {
+        if (isset($response) && !is_null($response)) {
             var_dump($response);
         }
 
-        if (!is_null($responsePhoto)) {
+        if (isset($responsePhoto) && !is_null($responsePhoto)) {
             var_dump($responsePhoto);
         }
     }
