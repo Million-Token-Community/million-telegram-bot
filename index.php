@@ -30,8 +30,12 @@
 
     } elseif (strpos($message, "/top1000") === 0) {
         $command = "/top1000";
-        $address = str_replace("/top1000", "", $message);
-        $message = str_replace($address, "", $message);
+
+        $arr = explode(" ", $message);
+        $message = $arr[0];
+        array_shift($arr);
+        $address = implode(" ", $arr);
+
         require "commands/top1000.php";
 
     } elseif (strpos($message, "/cat") === 0) {
