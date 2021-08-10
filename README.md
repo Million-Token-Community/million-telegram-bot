@@ -15,6 +15,7 @@ The bot supports these commands:
 - /gas
 - /cat
 - /lambo
+- /top1000
 
 Bot messages older than 1 minute are automatically deleted to declutter the Telegram chat.  
 Repeating commands within a minute will also be deleted, so only the latest remains.
