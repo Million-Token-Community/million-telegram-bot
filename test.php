@@ -8,6 +8,7 @@
     require 'lib/emoji.php';
 
     $botHistory = new BotHistory("botHistory.json");
+    $stats = new Statistics("stats.json");
 
     $path = "https://api.telegram.org/bot$apiToken";
     $message = $_GET["message"];
@@ -16,46 +17,40 @@
 
     if (strpos($message, '/') === 0) {
 
-        switch ($message) {
-
-            case '/history':
-                var_dump($botHistory->messages);
-                exit();
-                break;
-
-            case '/oldmessages':
-                var_dump($botHistory->getOldMessages());
-                exit();
-                break;
-
-            case '/deleteoldmessages':
-                $botHistory->deleteOldMessages();
-                exit();
-                break;
-
-            case '/gas':
-                require "commands/gas.php";
-                break;
-
-            case '/price':
-                require "commands/price.php";
-                break;
-
-            case '/holders':
-                require "commands/holders.php";
-                break;
-
-            case '/volume':
-                require "commands/volume.php";
-                break;
-
-            case '/cat':
-                require "commands/cat.php";
-                break;
-
-            case '/lambo':
-                require "commands/lambo.php";
-                break;
+        if (strpos($message, "/gas") === 0) {
+            require "commands/gas.php";
+    
+        } elseif (strpos($message, "/price") === 0) {
+            require "commands/price.php";
+    
+        } elseif (strpos($message, "/holders") === 0) {
+            require "commands/holders.php";
+    
+        } elseif (strpos($message, "/volume") === 0) {
+            require "commands/volume.php";
+    
+        } elseif (strpos($message, "/top1000") === 0) {
+            $address = str_replace("/top1000", "", $_GET["message"]);
+            require "commands/top1000.php";
+    
+        } elseif (strpos($message, "/cat") === 0) {
+            require "commands/cat.php";
+    
+        } elseif (strpos($message, "/lambo") === 0 || $message == "when lambo" || $message == "lambo when") {
+            require "commands/lambo.php";
+    
+        } elseif (strpos($message, "/history") === 0) {
+            var_dump($botHistory->messages);
+    
+        } elseif (strpos($message, "/oldmessages") === 0) {
+            var_dump($botHistory->getOldMessages());
+    
+        } elseif (strpos($message, "/deleteoldmessages") === 0) {
+            var_dump($botHistory->deleteOldMessages());
+    
+        } elseif (strpos($message, "/stats") === 0) {
+            var_dump($stats->stats);
+    
         }
 
         if (isset($response) && !is_null($response)) {

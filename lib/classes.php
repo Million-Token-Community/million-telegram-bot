@@ -104,12 +104,11 @@
             $botHistoryFile = fopen($this->fileName, "c+") or die("Unable to open file!");
             $fileSize = filesize($this->fileName);
             if ($fileSize > 0) {
-                $botHistory = json_decode(fread($botHistoryFile, $fileSize));
+                $this->messages = json_decode(fread($botHistoryFile, $fileSize));
             } else {
-                $botHistory = array();
+                $this->messages = array();
             }
             fclose($botHistoryFile);
-            $this->messages = $botHistory;
         }
 
         public function saveMessage($chatId, $botMessageId, $command) {
@@ -155,6 +154,42 @@
 
         private function saveToFile() {
             file_put_contents($this->fileName, General::outJson($this->messages));
+        }
+    }
+
+    class Statistics {
+        public $fileName;
+        public $stats;
+    
+        function __construct($file) {
+            $this->fileName = $file;
+            $this->readStats();
+        }
+    
+        private function readStats() {
+            $statsFile = fopen($this->fileName, "c+") or die("Unable to open file!");
+            $fileSize = filesize($this->fileName);
+            if ($fileSize > 0) {
+                $this->stats = json_decode(fread($statsFile, $fileSize));
+            } else {
+                $this->stats = (object) array();
+            }
+            fclose($statsFile);
+        }
+    
+        public function increment($command) {
+    
+            if (is_object($this->stats) && property_exists($this->stats, $command)) {
+                $this->stats->$command += 1;
+            } else {
+                $this->stats->$command = 1;
+            }
+    
+            $this->saveToFile();
+        }
+    
+        private function saveToFile() {
+            file_put_contents($this->fileName, General::outJson($this->stats, TRUE));
         }
     }
 ?>

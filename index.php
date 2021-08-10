@@ -4,6 +4,7 @@
     require 'lib/emoji.php';
 
     $botHistory = new BotHistory("botHistory.json");
+    $stats = new Statistics("stats.json");
 
     $path = "https://api.telegram.org/bot$apiToken";
     $update = json_decode(file_get_contents("php://input"), TRUE);
@@ -12,23 +13,39 @@
     $message = $update["message"]["text"];
 
     if (strpos($message, "/gas") === 0) {
+        $command = "/gas";
         require "commands/gas.php";
 
     } elseif (strpos($message, "/price") === 0) {
+        $command = "/price";
         require "commands/price.php";
 
     } elseif (strpos($message, "/holders") === 0) {
+        $command = "/holders";
         require "commands/holders.php";
 
     } elseif (strpos($message, "/volume") === 0) {
+        $command = "/volume";
         require "commands/volume.php";
 
+    } elseif (strpos($message, "/top1000") === 0) {
+        $command = "/top1000";
+        $address = str_replace("/top1000", "", $message);
+        $message = str_replace($address, "", $message);
+        require "commands/top1000.php";
+
     } elseif (strpos($message, "/cat") === 0) {
+        $command = "/cat";
         require "commands/cat.php";
 
     } elseif (strpos($message, "/lambo") === 0 || $message == "when lambo" || $message == "lambo when") {
+        $command = "/lambo";
         require "commands/lambo.php";
 
+    }
+
+    if (isset($command)) {
+        $stats->increment($command);
     }
 
     if (isset($response) && !is_null($response)) {
@@ -50,13 +67,12 @@
     }
     $botHistory->deleteOldMessages();
 
-    # Save new message in bot history
     if (isset($botMessageId) && !is_null($botMessageId)) {
-        $botHistory->saveMessage($chatId, $botMessageId, $message);
+        $botHistory->saveMessage($chatId, $botMessageId, $command);
     }
 
     if (isset($botPhotoMessageId) && !is_null($botPhotoMessageId)) {
-        $botHistory->saveMessage($chatId, $botPhotoMessageId, $message);
+        $botHistory->saveMessage($chatId, $botPhotoMessageId, $command);
     }
 
 ?>
