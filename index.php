@@ -42,9 +42,13 @@
         $command = "/cat";
         require "commands/cat.php";
 
-    } elseif (strpos($message, "/lambo") === 0 || $message == "when lambo" || $message == "lambo when") {
+    } elseif (strpos($message, "/lambo") === 0) {
         $command = "/lambo";
         require "commands/lambo.php";
+
+    } elseif ((strpos($message, "when") !== FALSE || strpos($message, "wen") !== FALSE) && (strpos($message, "moon") !== FALSE || strpos($message, "lambo") !== FALSE)) {
+        $command = "/wenlambomoon";
+        $responseAnimation = "https://milliontoken.live/assets/img/hold.gif";
 
     }
 
@@ -54,20 +58,26 @@
 
     if (isset($response) && !is_null($response)) {
         $responseEnc = urlencode($response);
-        $result = General::newHttpRequest($path."/sendmessage?chat_id=$chatId&text=$responseEnc&parse_mode=HTML", "GET");
+        $result = General::newHttpRequest($path."/sendmessage?chat_id=$chatId&text=$responseEnc&parse_mode=HTML");
         $botMessageId = $result["response"]->result->message_id;
     }
 
     if (isset($responsePhoto) && !is_null($responsePhoto)) {
         $responsePhotoEnc = urlencode($responsePhoto);
-        $result = General::newHttpRequest($path."/sendPhoto?chat_id=$chatId&photo=$responsePhotoEnc&parse_mode=HTML", "GET");
+        $result = General::newHttpRequest($path."/sendPhoto?chat_id=$chatId&photo=$responsePhotoEnc&parse_mode=HTML");
         $botPhotoMessageId = $result["response"]->result->message_id;
+    }
+
+    if (isset($responseAnimation) && !is_null($responseAnimation)) {
+        $responseAnimationEnc = urlencode($responseAnimation);
+        $result = General::newHttpRequest($path."/sendAnimation?chat_id=$chatId&animation=$responseAnimationEnc");
+        $botAnimationMessageId = $result["response"]->result->message_id;
     }
 
     # Clean up old bot messages
     $oldBotMessages = $botHistory->getOldMessages($message);
     foreach ($oldBotMessages as $msg) {
-        General::newHttpRequest($path."/deleteMessage?chat_id=".$msg->chatId."&message_id=".$msg->botMessageId, "GET");
+        General::newHttpRequest($path."/deleteMessage?chat_id=".$msg->chatId."&message_id=".$msg->botMessageId);
     }
     $botHistory->deleteOldMessages();
 
@@ -77,6 +87,10 @@
 
     if (isset($botPhotoMessageId) && !is_null($botPhotoMessageId)) {
         $botHistory->saveMessage($chatId, $botPhotoMessageId, $command);
+    }
+
+    if (isset($botAnimationMessageId) && !is_null($botAnimationMessageId)) {
+        $botHistory->saveMessage($chatId, $botAnimationMessageId, $command);
     }
 
 ?>
