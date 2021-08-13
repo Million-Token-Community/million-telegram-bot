@@ -30,12 +30,6 @@
 
     } elseif (strpos($message, "/top1000") === 0) {
         $command = "/top1000";
-
-        $arr = explode(" ", $message);
-        $message = $arr[0];
-        array_shift($arr);
-        $address = implode(" ", $arr);
-
         require "commands/top1000.php";
 
     } elseif (strpos($message, "/lambo") === 0) {

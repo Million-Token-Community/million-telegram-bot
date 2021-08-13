@@ -1,6 +1,11 @@
 <?php
     try {
 
+        $arr = explode(" ", $message);
+        $message = $arr[0];
+        array_shift($arr);
+        $address = implode(" ", $arr);
+
         $body = General::outJson(array(
             "key" => $mtLiveKey,
             "action" => "top1000",
