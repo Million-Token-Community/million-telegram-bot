@@ -18,6 +18,7 @@
         }, glob(__DIR__."/commands/*.php"));
 
         $command = strtolower(str_replace("/", "", explode(" ", $message)[0]));
+        $command = str_replace("@million_token_bot", "", $command);
 
         if (in_array($command, $commands)) {
             require __DIR__."/commands/$command.php";
