@@ -9,7 +9,8 @@
         if ($result["status"] === 200 && is_object($result["response"])) {
             $price = $result["response"]->price;
             $price24h = $result["response"]->price24h;
-            $response = $dollar."Price is <b>$$price</b> ($price24h%)";
+            $plus = ($price24h > 0) ? "+" : "";
+            $response = $dollar."Price is <b>$$price</b> ($plus$price24h%)";
             if ($price24h > 0) {
                 $response .= " $chartup";
             } elseif ($price24h < 0) {

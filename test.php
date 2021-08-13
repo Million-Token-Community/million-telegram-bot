@@ -3,59 +3,55 @@
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
 
-    require 'lib/classes.php';
-    require 'lib/keys.php';
-    require 'lib/emoji.php';
-
-    $botHistory = new BotHistory("botHistory.json");
-    $stats = new Statistics("stats.json");
+    require __DIR__."/includes/classes.php";
+    require __DIR__."/includes/keys.php";
+    require __DIR__."/includes/emoji.php";
 
     $path = "https://api.telegram.org/bot$apiToken";
     $message = $_GET["message"];
 
     $response = NULL;
 
-    if (strpos($message, '/') === 0) {
+    $commands = array_map(function($item) {
+        return strtolower(str_replace(".php", "", basename($item)));
+    }, glob(__DIR__."/commands/*.php"));
 
-        if (strpos($message, "/gas") === 0) {
-            require "commands/gas.php";
-    
-        } elseif (strpos($message, "/price") === 0) {
-            require "commands/price.php";
-    
-        } elseif (strpos($message, "/holders") === 0) {
-            require "commands/holders.php";
-    
-        } elseif (strpos($message, "/volume") === 0) {
-            require "commands/volume.php";
-    
-        } elseif (strpos($message, "/top1000") === 0) {
-            $address = str_replace("/top1000", "", $_GET["message"]);
-            require "commands/top1000.php";
-    
-        } elseif (strpos($message, "/lambo") === 0 || $message == "when lambo" || $message == "lambo when") {
-            require "commands/lambo.php";
-    
-        } elseif (strpos($message, "/history") === 0) {
+    if (strpos($message, '/') === 0) {
+        $command = strtolower(str_replace("/", "", explode(" ", $message)[0]));
+
+        if (in_array($command, $commands)) {
+            require __DIR__."/commands/$command.php";
+
+        } elseif ($command === "history") {
             var_dump($botHistory->messages);
     
-        } elseif (strpos($message, "/oldmessages") === 0) {
+        } elseif ($command === "oldmessages") {
             var_dump($botHistory->getOldMessages());
     
-        } elseif (strpos($message, "/deleteoldmessages") === 0) {
+        } elseif ($command === "deleteoldmessages") {
             var_dump($botHistory->deleteOldMessages());
     
-        } elseif (strpos($message, "/stats") === 0) {
+        } elseif ($command === "stats") {
+            $stats = new Statistics("stats.json");
             var_dump($stats->stats);
     
         }
 
-        if (isset($response) && !is_null($response)) {
-            var_dump($response);
-        }
+    } elseif ((strpos($message, "when") !== FALSE || strpos($message, "wen") !== FALSE) 
+                && (strpos($message, "moon") !== FALSE || strpos($message, "lambo") !== FALSE)) {
+        $command = "/wenlambomoon";
+        $responseAnimation = "https://milliontoken.live/assets/img/hold.gif";
+    }
 
-        if (isset($responsePhoto) && !is_null($responsePhoto)) {
-            var_dump($responsePhoto);
-        }
+    if (isset($response) && !is_null($response)) {
+        echo $response;
+    }
+
+    if (isset($responsePhoto) && !is_null($responsePhoto)) {
+        echo $responsePhoto;
+    }
+
+    if (isset($responseAnimation) && !is_null($responseAnimation)) {
+        echo $responseAnimation;
     }
 ?>
