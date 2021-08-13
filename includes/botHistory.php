@@ -13,16 +13,8 @@
         $botHistory->deleteOldMessages();
     }
 
-    if (isset($botMessageId) && !is_null($botMessageId)) {
+    foreach ($botMessageIDs as $botMessageId) {
         $botHistory->saveMessage($chatId, $botMessageId, $command);
-    }
-
-    if (isset($botPhotoMessageId) && !is_null($botPhotoMessageId)) {
-        $botHistory->saveMessage($chatId, $botPhotoMessageId, $command);
-    }
-
-    if (isset($botAnimationMessageId) && !is_null($botAnimationMessageId)) {
-        $botHistory->saveMessage($chatId, $botAnimationMessageId, $command);
     }
 
 ?>

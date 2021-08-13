@@ -2,22 +2,35 @@
 
     # description / If a response is defined, send the message to Telegram
 
-    if (isset($response) && !is_null($response)) {
-        $responseEnc = urlencode($response);
-        $result = General::newHttpRequest($path."/sendmessage?chat_id=$chatId&text=$responseEnc&parse_mode=HTML");
-        $botMessageId = $result["response"]->result->message_id;
-    }
+    $botMessageIDs = array();
 
-    if (isset($responsePhoto) && !is_null($responsePhoto)) {
-        $responsePhotoEnc = urlencode($responsePhoto);
-        $result = General::newHttpRequest($path."/sendPhoto?chat_id=$chatId&photo=$responsePhotoEnc&parse_mode=HTML");
-        $botPhotoMessageId = $result["response"]->result->message_id;
-    }
+    foreach ($responses as $response) {
+        if (isset($response)
+            && is_object($response)
+            && property_exists($response, "type")
+            && $response->type !== NULL
+            && $response->payload !== NULL) {
 
-    if (isset($responseAnimation) && !is_null($responseAnimation)) {
-        $responseAnimationEnc = urlencode($responseAnimation);
-        $result = General::newHttpRequest($path."/sendAnimation?chat_id=$chatId&animation=$responseAnimationEnc");
-        $botAnimationMessageId = $result["response"]->result->message_id;
+            $response->payload = urlencode($response->payload);
+            
+            switch ($response->type) {
+
+                case 'htmltext':
+                    $result = General::newHttpRequest($path."/sendmessage?chat_id=$chatId&text=".$response->payload."&parse_mode=HTML");
+                    break;
+                
+                case 'photo':
+                    $result = General::newHttpRequest($path."/sendPhoto?chat_id=$chatId&photo=".$response->payload);
+                    break;
+                
+                case 'animation':
+                    $result = General::newHttpRequest($path."/sendAnimation?chat_id=$chatId&animation=".$response->payload);
+                    break;
+
+            }
+
+            array_push($botMessageIDs, $result["response"]->result->message_id);
+        }
     }
 
 ?>

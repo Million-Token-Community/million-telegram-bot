@@ -9,11 +9,14 @@
     $chatId = $update["message"]["chat"]["id"];
     $message = $update["message"]["text"];
 
-    $commands = array_map(function($item) {
-        return strtolower(str_replace(".php", "", basename($item)));
-    }, glob(__DIR__."/commands/*.php"));
+    $responses = array();
 
     if (strpos($message, '/') === 0) {
+
+        $commands = array_map(function($item) {
+            return strtolower(str_replace(".php", "", basename($item)));
+        }, glob(__DIR__."/commands/*.php"));
+
         $command = strtolower(str_replace("/", "", explode(" ", $message)[0]));
 
         if (in_array($command, $commands)) {
@@ -23,7 +26,11 @@
     } elseif ((strpos($message, "when") !== FALSE || strpos($message, "wen") !== FALSE) 
                 && (strpos($message, "moon") !== FALSE || strpos($message, "lambo") !== FALSE)) {
         $command = "/wenlambomoon";
-        $responseAnimation = "https://milliontoken.live/assets/img/hold.gif";
+        $response = (object) array(
+            "type" => "animation",
+            "payload" => "https://milliontoken.live/assets/img/hold.gif"
+        );
+        array_push($responses, $response);
     }
 
     require __DIR__.'/includes/stats.php';

@@ -1,12 +1,15 @@
 <?php
+
     try {
 
         $body = General::outJson(array(
             "key" => $mtLiveKey,
             "action" => "holders"
         ));
+
         $result = General::newHttpRequest("https://milliontoken.live/api", "POST", $body);
         if ($result["status"] === 200 && is_object($result["response"])) {
+
             $holders = $result["response"]->totalHolders;
             $ethHolders = $result["response"]->ethHolders;
             $bscHolders = $result["response"]->bscHolders;
@@ -18,18 +21,26 @@
                 $change24h = "+".$change24h;
             }
 
-            $response = "$diamond Current holders count is <b>$holders</b> ($ethHolders eth and $bscHolders bsc)\n24h: <b>$changeNum</b> (".$change24h."%)";
+            $response = (object) array(
+                "type" => "htmltext",
+                "payload" => NULL
+            );
+
+            $response->payload = "$diamond Current holders count is <b>$holders</b> ($ethHolders eth and $bscHolders bsc)\n24h: <b>$changeNum</b> (".$change24h."%)";
 
             if ($changeNum > 0) {
-                $response .= " $chartup";
+                $response->payload .= " $chartup";
             } elseif ($changeNum < 0) {
-                $response .= " $chartdown";
+                $response->payload .= " $chartdown";
             }
+
+            array_push($responses, $response);
 
         } else {
             throw new Exception();
         }
     } catch (Exception $e) {
-        $response = "Sorry, something went wrong with /holders";
+        $errorMsg = "Sorry, something went wrong with /holders";
     }
+
 ?>
