@@ -13,7 +13,6 @@ The bot supports these commands:
 - /holders
 - /volume
 - /gas
-- /cat
 - /lambo
 - /top1000
 

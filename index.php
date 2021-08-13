@@ -38,10 +38,6 @@
 
         require "commands/top1000.php";
 
-    } elseif (strpos($message, "/cat") === 0) {
-        $command = "/cat";
-        require "commands/cat.php";
-
     } elseif (strpos($message, "/lambo") === 0) {
         $command = "/lambo";
         require "commands/lambo.php";

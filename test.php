@@ -33,9 +33,6 @@
             $address = str_replace("/top1000", "", $_GET["message"]);
             require "commands/top1000.php";
     
-        } elseif (strpos($message, "/cat") === 0) {
-            require "commands/cat.php";
-    
         } elseif (strpos($message, "/lambo") === 0 || $message == "when lambo" || $message == "lambo when") {
             require "commands/lambo.php";
     
