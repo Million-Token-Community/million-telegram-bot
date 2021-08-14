@@ -11,13 +11,14 @@
         if ($result["status"] === 200 && is_object($result["response"])) {
             $volume24h = $result["response"]->volume24h;
             $volume24hpct = $result["response"]->volume24hpct;
+            $plus = ($volume24hpct > 0) ? "+" : "";
 
             $response = (object) array(
                 "type" => "htmltext",
                 "payload" => NULL
             );
 
-            $response->payload = "$moneybag 24h volume is <b>$".$volume24h."</b> ($volume24hpct%)";
+            $response->payload = "$moneybag 24h volume is <b>$".$volume24h."</b> ($plus$volume24hpct%)";
             if ($volume24hpct > 0) {
                 $response->payload .= " $chartup";
             } elseif ($volume24hpct < 0) {
