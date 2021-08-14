@@ -129,22 +129,23 @@
             $this->saveToFile();
         }
 
-        public function getOldMessages($command = null) {
+        public function getOldMessages($chatId, $command = null) {
             $oldMsg = array();
             foreach ($this->messages as $msg) {
                 $time = DateTime::createFromFormat('Y-m-d H:i:s', $msg->time);
-                if ($time < $this->minuteAgo || (!is_null($command) && $msg->command == $command)) {
+                if ($msg->chatId == $chatId && ($time < $this->minuteAgo || (!is_null($command) && $msg->command == $command))) {
                     array_push($oldMsg, $msg);
                 }
             }
             return $oldMsg;
         }
 
-        public function deleteOldMessages() {
+        public function deleteOldMessages($chatId) {
             $deleteLater = array();
             foreach ($this->messages as $msg) {
+                
                 $time = DateTime::createFromFormat('Y-m-d H:i:s', $msg->time);
-                if ($time >= $this->minuteAgo) {
+                if ($time >= $this->minuteAgo || $msg->chatId != $chatId) {
                     array_push($deleteLater, $msg);
                 }
             }

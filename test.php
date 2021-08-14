@@ -32,16 +32,18 @@
             array_push($responses, $response);
     
         } elseif ($command === "oldmessages") {
+            $chatId = $_GET['chatId'];
             $response = (object) array(
                 "type" => "htmltext",
-                "payload" => $botHistory->getOldMessages()
+                "payload" => $botHistory->getOldMessages($chatId)
             );
             array_push($responses, $response);
     
         } elseif ($command === "deleteoldmessages") {
+            $chatId = $_GET['chatId'];
             $response = (object) array(
                 "type" => "htmltext",
-                "payload" => $botHistory->deleteOldMessages()
+                "payload" => $botHistory->deleteOldMessages($chatId)
             );
             array_push($responses, $response);
     

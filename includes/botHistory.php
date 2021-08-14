@@ -5,11 +5,11 @@
     $botHistory = new BotHistory("botHistory.json");
 
     # Clean up old bot messages
-    $oldBotMessages = $botHistory->getOldMessages($command);
+    $oldBotMessages = $botHistory->getOldMessages($chatId, $command);
     foreach ($oldBotMessages as $msg) {
         General::newHttpRequest($path."/deleteMessage?chat_id=".$msg->chatId."&message_id=".$msg->botMessageId);
     }
-    $botHistory->deleteOldMessages();
+    $botHistory->deleteOldMessages($chatId);
 
     foreach ($botMessageIDs as $botMessageId) {
         $botHistory->saveMessage($chatId, $botMessageId, $command);
