@@ -74,7 +74,7 @@
             }
             
             if (!empty($response)) {
-                return array(
+                return (object) array(
                     "status" => $responseStatus["http_code"],
                     "response" => json_decode($response)
                 );
