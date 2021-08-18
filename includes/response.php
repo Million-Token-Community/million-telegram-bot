@@ -29,7 +29,7 @@
 
             }
 
-            array_push($botMessageIDs, $result["response"]->result->message_id);
+            array_push($botMessageIDs, $result->response->result->message_id);
         }
     }
 

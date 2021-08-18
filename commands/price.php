@@ -2,15 +2,13 @@
 
     try {
 
-        $body = General::outJson(array(
-            "key" => $mtLiveKey,
-            "action" => "price"
-        ));
+        $result = General::newHttpRequest("https://api.nomics.com/v1/currencies/ticker?key=$nomicsKey&ids=MM4");
 
-        $result = General::newHttpRequest("https://milliontoken.live/api", "POST", $body);
-        if ($result["status"] === 200 && is_object($result["response"])) {
-            $price = $result["response"]->price;
-            $price24h = $result["response"]->price24h;
+        if ($result->status === 200 && is_array($result->response)) {
+            $data = $result->response[0];
+
+            $price = round($data->price, 2);
+            $price24h = round($data->{'1d'}->price_change_pct * 100, 2);
             $plus = ($price24h > 0) ? "+" : "";
 
             $response = (object) array(
@@ -19,6 +17,7 @@
             );
 
             $response->payload = $dollar."Price is <b>$$price</b> ($plus$price24h%)";
+
             if ($price24h > 0) {
                 $response->payload .= " $chartup";
             } elseif ($price24h < 0) {

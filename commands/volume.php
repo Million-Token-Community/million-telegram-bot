@@ -2,15 +2,13 @@
 
     try {
 
-        $body = General::outJson(array(
-            "key" => $mtLiveKey,
-            "action" => "volume"
-        ));
+        $result = General::newHttpRequest("https://api.nomics.com/v1/currencies/ticker?key=$nomicsKey&ids=MM4");
+        
+        if ($result->status === 200 && is_array($result->response)) {
+            $data = $result->response[0];
+            $volume24h = round($data->{'1d'}->volume);
+            $volume24hpct = round($data->{'1d'}->volume_change_pct * 100, 2);
 
-        $result = General::newHttpRequest("https://milliontoken.live/api", "POST", $body);
-        if ($result["status"] === 200 && is_object($result["response"])) {
-            $volume24h = $result["response"]->volume24h;
-            $volume24hpct = $result["response"]->volume24hpct;
             $plus = ($volume24hpct > 0) ? "+" : "";
 
             $response = (object) array(
@@ -18,7 +16,7 @@
                 "payload" => NULL
             );
 
-            $response->payload = "$moneybag 24h volume is <b>$".$volume24h."</b> ($plus$volume24hpct%)";
+            $response->payload = "$moneybag 24h volume is <b>$".number_format($volume24h)."</b> ($plus$volume24hpct%)";
             if ($volume24hpct > 0) {
                 $response->payload .= " $chartup";
             } elseif ($volume24hpct < 0) {

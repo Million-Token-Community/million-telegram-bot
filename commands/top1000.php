@@ -13,9 +13,9 @@
         ));
 
         $result = General::newHttpRequest("https://milliontoken.live/api", "POST", $body);
-        if ($result["status"] === 200 && is_object($result["response"])) {
+        if ($result->status === 200 && is_object($result->response)) {
 
-            $holder = $result["response"];
+            $holder = $result->response;
 
             $response = (object) array(
                 "type" => "htmltext",

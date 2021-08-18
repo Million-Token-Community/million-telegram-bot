@@ -2,37 +2,29 @@
 
     try {
 
-        $body = General::outJson(array(
-            "key" => $mtLiveKey,
-            "action" => "holders"
-        ));
+        $result = General::newHttpRequest("https://api.ethplorer.io/getAddressInfo/0x6b4c7a5e3f0b99fcd83e9c089bddd6c7fce5c611?apiKey=freekey");
+        if ($result->status === 200 && is_object($result->response)) {
 
-        $result = General::newHttpRequest("https://milliontoken.live/api", "POST", $body);
-        if ($result["status"] === 200 && is_object($result["response"])) {
-
-            $holders = $result["response"]->totalHolders;
-            $ethHolders = $result["response"]->ethHolders;
-            $bscHolders = $result["response"]->bscHolders;
-            $changeNum = $result["response"]->change24h;
-            $change24h = $result["response"]->change24hpct;
-
-            if ($changeNum > 0) {
-                $changeNum = "+".$changeNum;
-                $change24h = "+".$change24h;
+            $data = $result->response;
+            $ethHolders = $data->tokenInfo->holdersCount;
+            $bscHolders = 0;
+            $bscResult = General::newHttpRequest("https://api.covalenthq.com/v1/56/tokens/0xBF05279F9Bf1CE69bBFEd670813b7e431142Afa4/token_holders/?key=$covalentKey&page-size=1");
+            if ($bscResult->status === 200 && is_object($bscResult->response)) {
+                $bscHolders = $bscResult->response->data->pagination->total_count;
             }
+
+            if ($bscHolders === 0) {
+                throw new Exception();
+            }
+            
+            $holders = $ethHolders + $bscHolders;
 
             $response = (object) array(
                 "type" => "htmltext",
                 "payload" => NULL
             );
 
-            $response->payload = "$diamond Current holders count is <b>$holders</b> ($ethHolders eth and $bscHolders bsc)\n24h: <b>$changeNum</b> (".$change24h."%)";
-
-            if ($changeNum > 0) {
-                $response->payload .= " $chartup";
-            } elseif ($changeNum < 0) {
-                $response->payload .= " $chartdown";
-            }
+            $response->payload = "$diamond Current holders count is <b>".number_format($holders)."</b> (".number_format($ethHolders)." eth and ".number_format($bscHolders)." bsc)";
 
             array_push($responses, $response);
 
