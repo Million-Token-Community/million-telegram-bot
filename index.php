@@ -9,9 +9,19 @@
     $chatId = $update["message"]["chat"]["id"];
     $message = $update["message"]["text"];
 
+    $bannedChannels = array(
+        "-1001487932707"
+    );
+
     $responses = array();
 
-    if (strpos($message, '/') === 0) {
+    if (in_array($chatId, $bannedChannels)) {
+        $response = (object) array(
+            "type" => "htmltext",
+            "payload" => "This is an unofficial channel. Please head over to the official channel at @millionjacuzzibar."
+        );
+        array_push($responses, $response);
+    } elseif (strpos($message, '/') === 0) {
 
         $commands = array_map(function($item) {
             return strtolower(str_replace(".php", "", basename($item)));
