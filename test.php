@@ -57,14 +57,6 @@
 
         }
 
-    } elseif ((strpos($message, "when") !== FALSE || strpos($message, "wen") !== FALSE) 
-                && (strpos($message, "moon") !== FALSE || strpos($message, "lambo") !== FALSE)) {
-        $command = "/wenlambomoon";
-        $response = (object) array(
-            "type" => "htmltext",
-            "payload" => "https://milliontoken.live/assets/img/hold.gif"
-        );
-        array_push($responses, $response);
     }
 
     foreach ($responses as $response) {

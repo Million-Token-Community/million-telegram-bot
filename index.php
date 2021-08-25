@@ -10,7 +10,7 @@
     $message = $update["message"]["text"];
 
     $bannedChannels = array(
-        "-1001487932707"
+        "-1001487932707" # Old TG Group run by Don Dee
     );
 
     $responses = array();
@@ -21,6 +21,7 @@
             "payload" => "This is an unofficial channel. Please head over to the official channel at @millionjacuzzibar."
         );
         array_push($responses, $response);
+
     } elseif (strpos($message, '/') === 0) {
 
         $commands = array_map(function($item) {
@@ -34,14 +35,6 @@
             require __DIR__."/commands/$command.php";
         }
 
-    } elseif ((strpos($message, "when") !== FALSE || strpos($message, "wen") !== FALSE) 
-                && (strpos($message, "moon") !== FALSE || strpos($message, "lambo") !== FALSE)) {
-        $command = "/wenlambomoon";
-        $response = (object) array(
-            "type" => "animation",
-            "payload" => "https://milliontoken.live/assets/img/hold.gif"
-        );
-        array_push($responses, $response);
     }
 
     require __DIR__.'/includes/stats.php';
