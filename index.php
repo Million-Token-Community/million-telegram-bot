@@ -8,6 +8,7 @@
 
     $chatId = $update["message"]["chat"]["id"];
     $message = $update["message"]["text"];
+    $command = NULL;
 
     $bannedChannels = array(
         "-1001487932707" # Old TG Group run by Don Dee
