@@ -95,7 +95,7 @@
 
         function __construct($file) {
             $this->minuteAgo = new DateTime();
-            $this->minuteAgo->sub(new DateInterval('PT1M'));
+            $this->minuteAgo->sub(new DateInterval('PT3M'));
             $this->fileName = $file;
             $this->readMessages();
         }
