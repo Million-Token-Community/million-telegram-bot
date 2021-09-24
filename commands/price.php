@@ -25,11 +25,6 @@
             }
             array_push($responses, $response);
 
-            $response = (object) array(
-                "type" => "photo",
-                "payload" => "https://milliontoken.live/chart/price/".rand()
-            );
-            array_push($responses, $response);
         } else {
             throw new Exception();
         }
